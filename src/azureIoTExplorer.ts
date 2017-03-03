@@ -52,6 +52,10 @@ export class AzureIoTExplorer {
         this._deviceExplorer.listDevice();
     }
 
+    public getDeviceById(): void {
+        this._deviceExplorer.getDeviceById();
+    }
+
     public createDevice(): void {
         this._deviceExplorer.createDevice();
     }

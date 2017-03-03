@@ -33,6 +33,10 @@ export function activate(context: vscode.ExtensionContext) {
         azureIoTExplorer.listDevice();
     });
 
+    let getDeviceById = vscode.commands.registerCommand("azure-iot-toolkit.getDeviceById", () => {
+        azureIoTExplorer.getDeviceById();
+    });
+
     let createDevice = vscode.commands.registerCommand("azure-iot-toolkit.createDevice", () => {
         azureIoTExplorer.createDevice();
     });
@@ -60,6 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(startMonitorEventHubMessage);
     context.subscriptions.push(stopMonitorEventHubMessage);
     context.subscriptions.push(listDevice);
+    context.subscriptions.push(getDeviceById);
     context.subscriptions.push(createDevice);
     context.subscriptions.push(deleteDevice);
     context.subscriptions.push(discoverDevice);

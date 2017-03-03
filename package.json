@@ -33,6 +33,7 @@
     "onCommand:azure-iot-toolkit.sendMessageToEventHub",
     "onCommand:azure-iot-toolkit.startMonitorEventHubMessage",
     "onCommand:azure-iot-toolkit.listDevice",
+    "onCommand:azure-iot-toolkit.getDeviceById",
     "onCommand:azure-iot-toolkit.createDevice",
     "onCommand:azure-iot-toolkit.deleteDevice",
     "onCommand:azure-iot-toolkit.discoverDevice",
@@ -71,6 +72,10 @@
         "title": "List device"
       },
       {
+        "command": "azure-iot-toolkit.getDeviceById",
+        "title": "Get device by Id"
+      },
+      {
         "command": "azure-iot-toolkit.createDevice",
         "title": "Create device"
       },
@@ -107,6 +112,10 @@
       {
         "command": "azure-iot-toolkit.listDevice",
         "key": "ctrl+alt+f1"
+      },
+      {
+        "command": "azure-iot-toolkit.getDeviceById",
+        "key": "ctrl+alt+f7"
       },
       {
         "command": "azure-iot-toolkit.createDevice",
@@ -180,6 +189,11 @@
           "when": "!inOutput",
           "command": "azure-iot-toolkit.discoverDevice",
           "group": "azure-iot-toolkit-3@4"
+        },
+        {
+          "when": "!inOutput",
+          "command": "azure-iot-toolkit.getDeviceById",
+          "group": "azure-iot-toolkit-3@5"
         }
       ]
     },

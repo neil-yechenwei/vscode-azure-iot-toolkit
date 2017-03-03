@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { AppInsightsClient } from "./appInsightsClient";
 import { BaseExplorer } from "./baseExplorer";
 import { Utility } from "./utility";
+import { ConnectionString } from "azure-iot-device";
 import iothub = require("azure-iothub");
 
 export class DeviceExplorer extends BaseExplorer {
@@ -26,6 +27,26 @@ export class DeviceExplorer extends BaseExplorer {
             deviceList.forEach((device, index) => {
                 this.outputLine(`${label}#${index + 1}`, JSON.stringify(device, null, 2));
             });
+        });
+    }
+
+    public getDeviceById(): void {
+        let label = "Device";
+        let iotHubConnectionString = Utility.getConfig("iotHubConnectionString", "IoT Hub Connection String");
+        if (!iotHubConnectionString) {
+            return;
+        }
+
+        let connectionStringParam = ConnectionString.parse(iotHubConnectionString);
+        let hostName = connectionStringParam.HostName;
+        let registry = iothub.Registry.fromConnectionString(iotHubConnectionString);
+
+        vscode.window.showInputBox({ prompt: "Enter device id to retrive device information" }).then((deviceId: string) => {
+            if (deviceId !== undefined) {
+                this._outputChannel.show();
+                this.outputLine(label, `Retriving device ${deviceId}`);
+                registry.get(deviceId, this.done("Get", label, hostName));
+            }
         });
     }
 
@@ -66,7 +87,7 @@ export class DeviceExplorer extends BaseExplorer {
         });
     }
 
-    private done(op: string, label: string) {
+    private done(op: string, label: string, hostName: string = null) {
         return (err, deviceInfo, res) => {
             if (err) {
                 this._appInsightsClient.sendEvent(`${label}.${op}`, { Result: "Fail" });
@@ -81,6 +102,15 @@ export class DeviceExplorer extends BaseExplorer {
                 this.outputLine(label, `[${op}][${result}] status: ${res.statusCode} ${res.statusMessage}`);
             }
             if (deviceInfo) {
+                if(deviceInfo.authentication.SymmetricKey.primaryKey!=null){
+                    let deviceConnectionStringWithKey=ConnectionString.createWithSharedAccessKey(hostName,deviceInfo.deviceId,deviceInfo.authentication.SymmetricKey.primaryKey);
+                    deviceInfo['deviceConnectionStringWithKey']=deviceConnectionStringWithKey;
+                }
+                if(deviceInfo.authentication.x509Thumbprint.primaryThumbprint!=null){                    
+                    let deviceConnectionStringWithCert=ConnectionString.createWithX509Certificate(hostName,deviceInfo.deviceId);
+                    deviceInfo["deviceConnectionStringWithCert"]=deviceConnectionStringWithCert;
+                }
+                
                 this.outputLine(label, `[${op}] device info: ${JSON.stringify(deviceInfo, null, 2)}`);
             }
         };
