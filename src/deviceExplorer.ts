@@ -1,9 +1,9 @@
 "use strict";
+import { ConnectionString } from "azure-iot-device";
 import * as vscode from "vscode";
 import { AppInsightsClient } from "./appInsightsClient";
 import { BaseExplorer } from "./baseExplorer";
 import { Utility } from "./utility";
-import { ConnectionString } from "azure-iot-device";
 import iothub = require("azure-iothub");
 
 export class DeviceExplorer extends BaseExplorer {
@@ -102,15 +102,18 @@ export class DeviceExplorer extends BaseExplorer {
                 this.outputLine(label, `[${op}][${result}] status: ${res.statusCode} ${res.statusMessage}`);
             }
             if (deviceInfo) {
-                if(deviceInfo.authentication.SymmetricKey.primaryKey!=null){
-                    let deviceConnectionStringWithKey=ConnectionString.createWithSharedAccessKey(hostName,deviceInfo.deviceId,deviceInfo.authentication.SymmetricKey.primaryKey);
-                    deviceInfo['deviceConnectionStringWithKey']=deviceConnectionStringWithKey;
+                if (deviceInfo.authentication.SymmetricKey.primaryKey != null) {
+                    let deviceConnectionStringWithKey = ConnectionString.createWithSharedAccessKey(hostName,
+                        deviceInfo.deviceId, deviceInfo.authentication.SymmetricKey.primaryKey);
+                    // tslint:disable-next-line:no-string-literal
+                    deviceInfo["deviceConnectionStringWithKey"] = deviceConnectionStringWithKey;
                 }
-                if(deviceInfo.authentication.x509Thumbprint.primaryThumbprint!=null){                    
-                    let deviceConnectionStringWithCert=ConnectionString.createWithX509Certificate(hostName,deviceInfo.deviceId);
-                    deviceInfo["deviceConnectionStringWithCert"]=deviceConnectionStringWithCert;
+                if (deviceInfo.authentication.x509Thumbprint.primaryThumbprint != null) {
+                    let deviceConnectionStringWithCert = ConnectionString.createWithX509Certificate(hostName, deviceInfo.deviceId);
+                    // tslint:disable-next-line:no-string-literal
+                    deviceInfo["deviceConnectionStringWithCert"] = deviceConnectionStringWithCert;
                 }
-                
+
                 this.outputLine(label, `[${op}] device info: ${JSON.stringify(deviceInfo, null, 2)}`);
             }
         };
